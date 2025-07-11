@@ -1,5 +1,6 @@
 import dbconn from "../../config/dbconexion.js";
 import bcrypt from "bcryptjs";
+//implementa la encriptación con el algoritmo blouwFish con varias giros en la encriptación  salt
 
 export async function getUsersDB() {
   const [rows] = await dbconn.query("SELECT * FROM user");
