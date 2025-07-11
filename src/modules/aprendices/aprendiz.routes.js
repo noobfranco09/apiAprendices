@@ -1,4 +1,4 @@
-// src/api/v1/aprendices/aprendiz.routes.js
+
 import express from "express";
 import {
   getAllAprendices,

@@ -66,7 +66,7 @@ export async function authUserDB(userData) {
   if (consultaRegistro.length > 0) {
     const siCoincide = bcrypt.compareSync(
       password,
-      consultaRegistro.user_password
+      consultaRegistro[0].user_password
     );
     console.log(siCoincide);
     if (siCoincide) {
