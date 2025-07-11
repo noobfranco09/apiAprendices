@@ -1,17 +1,18 @@
 import {
-  getAprendicesDB,
-  getAprendizporIdDB,
-  createAprendizDB,
-  updateAprendizDB,
-  deleteAprendizDB,
+  getUsersDB,
+  getUserporIdDB,
+  createUserDB,
+  updateUserDB,
+  deleteUserDB,
+  authUserDB,
 } from "./auth.model.js";
 
-export async function getAllAprendices(req, res) {
+export async function getAllUsers(req, res) {
   try {
-    const aprendices = await getAprendicesDB();
+    const users = await getUsersDB();
     res.status(200).send({
       status: "ok",
-      data: aprendices,
+      data: users,
     });
   } catch (error) {
     res.status(500).send({
@@ -21,28 +22,21 @@ export async function getAllAprendices(req, res) {
   }
 }
 
-export async function getAprendizById(id) {
+export async function getUserById(id) {
   try {
-    const aprendiz = await getAprendizByIdDB(id);
+    const user = await getUserById(id);
     if (!aprendiz) {
       throw {
         status: "error",
-        message: "Aprendiz no encontrado.",
+        message: "usuario no encontrado.",
         statusCode: 404,
       };
     }
     res.status(200).send({
       status: "ok",
-      data: aprendiz,
+      data: user,
     });
   } catch (error) {
-    // OTRA FORMA POSIBLE
-    /*   console.error("Error en AprendizService.getAprendizByIdService:", error);
-    throw {
-      status: "error",
-      message: error.message || "Error al buscar aprendiz.",
-      statusCode: error.statusCode || 500,
-    }; */
     res.status(500).send({
       status: "error",
       message: error.code + "=>" + error.message,
@@ -50,12 +44,12 @@ export async function getAprendizById(id) {
   }
 }
 
-export async function createAprendiz(req, res) {
+export async function createUser(req, res) {
   try {
     let data = req.body;
     // Aquí debes añadir validaciones de entrada de datos --- passport-u otra libreria  !!!!!
 
-    const result = await createAprendizDB(data);
+    const result = await createUserDB(data);
     res.status(200).send({
       status: "ok",
       data: result,
@@ -63,18 +57,18 @@ export async function createAprendiz(req, res) {
   } catch (error) {
     res.status(500).send({
       status: "error",
-      message: error.code + "=>" + error.message,
+      message: error.message,
     });
   }
 }
 
-export async function updateAprendiz(id, data) {
+export async function updateUser(id, data) {
   try {
-    const result = await updateAprendizDB(id, data);
+    const result = await updateUserDB(id, data);
     if (result.affectedRows === 0) {
       throw {
         status: "error",
-        message: "Aprendiz no encontrado o no hubo cambios para actualizar.",
+        message: "usuario no encontrado o no hubo cambios para actualizar.",
         statusCode: 404,
       };
     }
@@ -85,18 +79,18 @@ export async function updateAprendiz(id, data) {
   } catch (error) {
     res.status(500).send({
       status: "error",
-      message: error.code + "=>" + error.message,
+      message: error.message,
     });
   }
 }
 
-export async function deleteAprendiz(id) {
+export async function deleteUser(id) {
   try {
-    const result = await deleteAprendizDB(id);
+    const result = await deleteUserDB(id);
     if (result.affectedRows === 0) {
       throw {
         status: "error",
-        message: "Aprendiz no encontrado para eliminar.",
+        message: "usuario no encontrado para eliminar.",
         statusCode: 404,
       };
     }
@@ -107,7 +101,26 @@ export async function deleteAprendiz(id) {
   } catch (error) {
     res.status(500).send({
       status: "error",
-      message: error.code + "=>" + error.message,
+      message: error.message,
+    });
+  }
+}
+
+export async function authUser(req, res) {
+  try {
+    let data = req.body;
+    // Aquí debes añadir validaciones de entrada de datos --- passport-u otra libreria  !!!!!
+
+    const result = await authUserDB(data);
+    console.log(result);
+    res.status(200).send({
+      status: "ok",
+      data: result,
+    });
+  } catch (error) {
+    res.status(500).send({
+      status: "error",
+      message: error.message,
     });
   }
 }

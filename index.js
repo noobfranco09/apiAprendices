@@ -2,6 +2,7 @@
 import express from "express"; // es6
 import "dotenv/config";
 import aprendiz from "../api/src/modules/aprendices/aprendiz.routes.js";
+import usuario from "../api/src/modules/auth/auth.routes.js";
 import morgan from "morgan";
 
 import cors from "cors";
@@ -21,10 +22,11 @@ app.use(express.json());
     "ms",
   ].join(" ");
 }); */
-app.use(morgan('tiny'));
+app.use(morgan("tiny"));
 app.use(cors());
 
 app.use("/aprendiz", aprendiz);
+app.use("/usuario", usuario);
 
 app.listen(process.env.PORT, () => {
   console.log(`API ON in port: ${process.env.PORT}`);

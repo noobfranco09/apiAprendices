@@ -1,36 +1,80 @@
+import dbconn from "../../config/dbconexion.js";
+import bcrypt from "bcryptjs";
 
-import dbconn from "../../config/dbconexion.js"; 
-
-export async function getAprendicesDB() {
-  const [rows] = await dbconn.query("SELECT * FROM aprendiz");
+export async function getUsersDB() {
+  const [rows] = await dbconn.query("SELECT * FROM user");
   return rows;
 }
 
-export async function getAprendizporIdDB(id) {
-  const [rows] = await dbconn.query("SELECT * FROM aprendiz WHERE id = ?", [
+export async function getUserporIdDB(id) {
+  const [rows] = await dbconn.query("SELECT * FROM user WHERE id_user = ?", [
     id,
   ]);
   return rows[0]; // Retorna el primer resultado o undefined si no se encuentra
 }
 
-export async function createAprendizDB(aprendizData) {
-  const [result] = await dbconn.query("INSERT INTO aprendiz SET ?", [
-    aprendizData,
-  ]);
+export async function createUserDB(userData) {
+  let email = userData.user_email;
+  let password = userData.user_password;
+
+  const [emailExiste] = await dbconn.query(
+    "SELECT * FROM user WHERE user_email = ?",
+    [email]
+  );
+
+  if (emailExiste.length > 0) {
+    throw new Error("El email ya esta asignado a otro usuario");
+  }
+
+  const userNuevo = {
+    user_email: userData.user_email,
+    user_nombre: userData.user_nombre,
+    user_apellido: userData.user_apellido,
+    user_password: bcrypt.hashSync(userData.user_password, 11),
+    user_telefono: userData.user_telefono,
+  };
+
+  const [result] = await dbconn.query("INSERT INTO user SET ?", [userNuevo]);
   return result;
 }
 
-export async function updateAprendizDB(id, aprendizData) {
-  const [result] = await dbconn.query("UPDATE aprendiz SET ? WHERE id = ?", [
-    aprendizData,
+export async function updateUserDB(id, userData) {
+  const [result] = await dbconn.query("UPDATE user SET ? WHERE id = ?", [
+    userData,
     id,
   ]);
   return result;
 }
 
-export async function deleteAprendizDB(id) {
-  const [result] = await dbconn.query("DELETE FROM aprendiz WHERE id = ?", [
-    id,
-  ]);
+// ejemplo para la formacion: recordar que esto por ley NO se debe hacer
+export async function deleteUserDB(id) {
+  const [result] = await dbconn.query("DELETE FROM user WHERE id = ?", [id]);
   return result;
+}
+
+// autenticacion del usuario en un factor
+
+export async function authUserDB(userData) {
+  let email = userData.user_email;
+  let password = userData.user_password;
+
+  const [consultaRegistro] = await dbconn.query(
+    "SELECT * FROM user WHERE user_email = ?",
+    [email]
+  );
+
+  if (consultaRegistro.length > 0) {
+    const siCoincide = bcrypt.compareSync(
+      password,
+      consultaRegistro.user_password
+    );
+    console.log(siCoincide);
+    if (siCoincide) {
+      return consultaRegistro;
+    } else {
+      throw new Error("la clave ingresada no coincide !");
+    }
+  } else {
+    throw new Error("el Usuario no existe en la Base de datos");
+  }
 }
