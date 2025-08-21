@@ -7,6 +7,9 @@ import {
   authUserDB,
 } from "./auth.model.js";
 
+import { generarToken } from "../helpers/adminTokens.js";
+
+
 export async function getAllUsers(req, res) {
   try {
     const users = await getUsersDB();
@@ -111,12 +114,19 @@ export async function authUser(req, res) {
     let data = req.body;
     // Aquí debes añadir validaciones de entrada de datos --- passport-u otra libreria  !!!!!
 
-    const result = await authUserDB(data);
-    console.log(result);
-    res.status(200).send({
-      status: "ok",
-      data: result,
-    });
+    const user = await authUserDB(data);
+    console.log(user);
+    if (user) {
+      const token = generarToken(user[0], process.env.TOKEN_LIFE,);
+
+      res.status(200).send({
+        status: "ok",
+        user: user[0].user_email,
+        foto:user[0].user_foto,
+        token:token
+      });
+    }
+
   } catch (error) {
     res.status(500).send({
       status: "error",

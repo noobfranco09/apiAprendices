@@ -23,7 +23,7 @@ export async function getAllAprendices(req, res) {
 
 export async function getAprendizById(id) {
   try {
-    const aprendiz = await getAprendizByIdDB(id);
+    const aprendiz = await getAprendizporIdDB(id);
     if (!aprendiz) {
       throw {
         status: "error",
