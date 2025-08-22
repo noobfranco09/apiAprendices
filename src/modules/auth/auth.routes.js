@@ -7,11 +7,11 @@ import {
   updateUser,
   authUser,
 } from "./auth.controller.js";
-
+import { autenticacionMiddleware } from "../helpers/adminTokens.js";
 const router = express.Router();
 
 // Rutas para Aprendices
-router.get("/listartodos", getAllUsers);
+router.get("/listartodos",autenticacionMiddleware, getAllUsers);
 router.get("/listarporid/:id", getUserById);
 router.post("/crear", createUser);
 router.post("/login", authUser);
