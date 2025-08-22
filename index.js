@@ -30,6 +30,7 @@ app.use("/aprendiz", aprendiz);
 app.use("/usuario", usuario);
 app.use("/ficha", ficha);
 
-app.listen(process.env.PORT, () => {
+const port = process.env.PORT || 3000;
+app.listen(port, () => {
   console.log(`API ON in port: ${process.env.PORT}`);
 });
