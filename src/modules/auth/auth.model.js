@@ -79,3 +79,11 @@ export async function authUserDB(userData) {
     throw new Error("el Usuario no existe en la Base de datos");
   }
 }
+
+export async function updateImageDb(userData, id) {
+  const [result] = await dbconn.query(
+    "update user set user_foto = ? where id_user = ?",
+    [userData, id]
+  );
+  return result;
+}

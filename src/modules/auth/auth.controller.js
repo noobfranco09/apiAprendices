@@ -5,6 +5,7 @@ import {
   updateUserDB,
   deleteUserDB,
   authUserDB,
+  updateImageDb
 } from "./auth.model.js";
 
 import { generarToken } from "../helpers/adminTokens.js";
@@ -25,10 +26,11 @@ export async function getAllUsers(req, res) {
   }
 }
 
-export async function getUserById(id) {
+export async function getUserById(req,res) {
   try {
-    const user = await getUserById(id);
-    if (!aprendiz) {
+    const id= req.params.id;
+    const user = await getUserporIdDB(id);
+    if (!user) {
       throw {
         status: "error",
         message: "usuario no encontrado.",
@@ -42,7 +44,7 @@ export async function getUserById(id) {
   } catch (error) {
     res.status(500).send({
       status: "error",
-      message: error.code + "=>" + error.message,
+      message: error.message,
     });
   }
 }
@@ -65,7 +67,7 @@ export async function createUser(req, res) {
   }
 }
 
-export async function updateUser(id, data) {
+export async function updateUser(req,res) {
   try {
     const result = await updateUserDB(id, data);
     if (result.affectedRows === 0) {
@@ -87,7 +89,7 @@ export async function updateUser(id, data) {
   }
 }
 
-export async function deleteUser(id) {
+export async function deleteUser(req,res) {
   try {
     const result = await deleteUserDB(id);
     if (result.affectedRows === 0) {
@@ -133,4 +135,12 @@ export async function authUser(req, res) {
       message: error.message,
     });
   }
+}
+
+export async function subirImagen(req,res) {
+  // tratamos el archivo subido a la api
+
+  //validamos la extensión del archivo
+
+  //comprobams la extensión y actualizamos la base de datos
 }
