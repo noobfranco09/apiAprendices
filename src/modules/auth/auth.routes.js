@@ -26,7 +26,7 @@ const subirImagenMulter =multer({storage:almacenamiento})
 router.get("/listartodos",autenticacionMiddleware, getAllUsers);
 router.get("/listarporid/:id", getUserById);
 router.post("/crear", createUser);
-router.post("/subirimagen",[subirImagenMulter.single('file0')],subirImagen)
+router.post("/subirimagen/:id",[subirImagenMulter.single('file0')],subirImagen)
 router.post("/login", authUser);
 router.put("/actualizar/:id", updateUser);
 router.delete("/borrar/:id", deleteUser);

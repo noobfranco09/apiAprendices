@@ -26,9 +26,9 @@ export async function getAllUsers(req, res) {
   }
 }
 
-export async function getUserById(req,res) {
+export async function getUserById(req, res) {
   try {
-    const id= req.params.id;
+    const id = req.params.id;
     const user = await getUserporIdDB(id);
     if (!user) {
       throw {
@@ -67,7 +67,7 @@ export async function createUser(req, res) {
   }
 }
 
-export async function updateUser(req,res) {
+export async function updateUser(req, res) {
   try {
     const result = await updateUserDB(id, data);
     if (result.affectedRows === 0) {
@@ -89,7 +89,7 @@ export async function updateUser(req,res) {
   }
 }
 
-export async function deleteUser(req,res) {
+export async function deleteUser(req, res) {
   try {
     const result = await deleteUserDB(id);
     if (result.affectedRows === 0) {
@@ -124,8 +124,8 @@ export async function authUser(req, res) {
       res.status(200).send({
         status: "ok",
         user: user[0].user_email,
-        foto:user[0].user_foto,
-        token:token
+        foto: user[0].user_foto,
+        token: token
       });
     }
 
@@ -137,10 +137,42 @@ export async function authUser(req, res) {
   }
 }
 
-export async function subirImagen(req,res) {
+export async function subirImagen(req, res) {
   // tratamos el archivo subido a la api
-
+  console.log(req.file);
+  if (!req.file && !req.files) {
+    return res.status(404).send(
+      {
+        status: 'error',
+        mensaje: 'Petición inválida'
+      }
+    )
+  }
   //validamos la extensión del archivo
-
+  let archivo = req.file.originalname;
+  let archivoSeparado = archivo.split(".");
+  let extension = archivoSeparado[1];
+  // console.log("información de la imágen")
+  // console.log(archivo,+'espacio',archivoSeparado,+'espacio',extension)
   //comprobams la extensión y actualizamos la base de datos
+  if (extension !== "png" && extension !== "jpg" && extension !== "PNG" && extension !== "JPG") {
+    return res.status(400).send({
+      status: "error",
+      mensaje: "formato de imágen no válido"
+    })
+  } else {
+    //recibimos el parámetro del id
+    let userId = req.params.id;
+    //recibimos la ruta de la imágen 
+    let rutaImagen = req.file.filename;
+
+    //actualizamos en la db;
+    let resultado = await updateImageDb(rutaImagen, userId)
+
+    //enviamos mensajes
+    return res.status(200).send({
+      status: "ok",
+      mensaje: "actualizado con éxito"
+    })
+  }
 }
